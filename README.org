@@ -64,4 +64,4 @@ faster. Since they are still subscribing to the whole frame in TCP. Something we
 [[./pictures/input.png]]
 With this image as input the output of the model was as follow
 #+name: Output Data
-[[./pictures/Output.png]]
+[[./pictures/output.png]]
