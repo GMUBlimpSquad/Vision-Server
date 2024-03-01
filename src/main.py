@@ -17,7 +17,7 @@ s.listen()
 conn, addr = s.accept()
 
 frameSize = 0
-model = torch.hub.load("ultralytics/yolov5", 'custom', "best.pt")
+model = torch.hub.load("ultralytics/yolov5", 'custom', path="../model/best.pt", force_reload=True)
 
 
 try:
@@ -29,7 +29,7 @@ try:
         except:
             bytes_to_read = 0
         img = bytes()
-        # print(bytes_to_read)
+        print(bytes_to_read)
         while len(img) < bytes_to_read:
             img += conn.recv(min(bytes_to_read - len(img), 4096))
 
@@ -47,8 +47,8 @@ try:
                 # print(coor_arr)
                 cv.rectangle(img,(coor_arr[0], coor_arr[1]), ( coor_arr[2], coor_arr[3]), (0,255,0), 3)
                 conn.send(sendstr.encode('utf-8'))
-            #results.show()
-            cv.imshow("image", img)
+            results.show()
+            # cv.imshow("image", img)
         else:
             print("Bad frame recv")
 
