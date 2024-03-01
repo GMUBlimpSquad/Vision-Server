@@ -57,3 +57,11 @@ service/model to run the object detection.
 According to my understanding florida is using Publish and Subscribe architecture to handel their camera transmission. I remember hearing
 (They use ROS) and Ros is based on Pub/Sub architecture. I cannot think of why Pub/Sub architecture might make the transmission any
 faster. Since they are still subscribing to the whole frame in TCP. Something we might want to research on.
+
+
+** In action?
+#+name: Inpute Image
+[[./pictures/input.png]]
+With this image as input the output of the model was as follow
+#+name: Output Data
+[[./pictures/Output.png]]
