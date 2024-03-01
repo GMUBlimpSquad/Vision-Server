@@ -1,0 +1,59 @@
+#+title: README
+
+* Vision Server
+Vision server is a blimp project aimed to provide an object detection capability to all of our agents.
+
+** Functionality
+1. Receive camera frame via TCP, and detect objects in the give frame and return the coordinates
+2. Handle multiple concurrent requests
+3. Make it as fast as possible and lightweight
+
+** The architecture
+This project utilizes a server/client architecture. A blimp is a client, and a computer running this program
+is a server. Docker is a containarization software that allows you to wrap a service
+inside a container and run it anywhere. It also allows you to create multiple copies of the same service.
+
+A load balancer will sit infront of the container that will take care of routing the load to the containers
+and insuring the load is balenced. It can also be programmed to automatically create new containers if there
+are more loads.
+
+#+name: ServerArchitecture
+[[./pictures/ServerArchitecture.png]]
+
+
+** Simple Use Case?
+To run this server, you will need docker. Docker wraps the model and all the services in a nice package that
+allows it to run in any device.
+
+The instruction to install docker can be found on the internet. Once you have docker install you can simply run the
+build-image.sh to build the docker image. and run.sh to run the container.
+
+The client code be found inside example folder. Currently the example is limited to ESP cams but it can be easily
+implemented in any other device that has WiFi and Camera.
+
+TODO Add more example for different board
+
+** Complex use case
+For a complicated use case, where we want to support a whole swarm of agents, we need to make sure the service is scalable.
+It is easy to just add more compute and call it a day, but it doesn't fully utilizes the capability of a given resource.
+
+*** Docker Compose
+To Be done.
+Add a docker compose file to spin up multiple instances of the docker container.
+
+
+*** Kubernetes
+Kubernetes is a tool that helps us define rules for when and how we want the containers created, and based on the Ingress and
+requests it will create and destroy containers.
+
+TODO Add this layer.
+
+*** Nginx
+Nginx is a very fast Advanced Load Balancer, Web Server, & Reverse Proxy can allow us to have one access point but connect multiple
+devices running the server, it can allow us to have different models running on different computers and can send request to specific
+service/model to run the object detection.
+
+** What is Florida doing?
+According to my understanding florida is using Publish and Subscribe architecture to handel their camera transmission. I remember hearing
+(They use ROS) and Ros is based on Pub/Sub architecture. I cannot think of why Pub/Sub architecture might make the transmission any
+faster. Since they are still subscribing to the whole frame in TCP. Something we might want to research on.
