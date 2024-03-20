@@ -1,2 +1,10 @@
 server_setup/
 env/
+model/runs
+model/train.py
+model/train.yaml
+model/yolo/
+model/yolo2yolov8.py
+# model/yolov8n.pt
+results_image0.jpg
+runs/

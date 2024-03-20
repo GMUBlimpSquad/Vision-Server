@@ -4,19 +4,24 @@ import socket
 import cv2 as cv
 import struct
 import numpy as np
+from ultralytics import YOLO
+from _thread import start_new_thread
 import torch
 
 
 HOST = "0.0.0.0"
-PORT = 8000
+PORT = 4000
 
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((HOST, PORT))
 s.listen()
 
+
+
 frameSize = 0
-model = torch.hub.load("ultralytics/yolov5", 'custom', path="model/best.pt", force_reload=True)
+#model = torch.hub.load("model/best.pt")
+model = YOLO('model/best.pt')
 
 
 def on_new_client(conn, addr):
@@ -34,33 +39,37 @@ def on_new_client(conn, addr):
 
         if len(img) >4:
             img = np.frombuffer(img, np.uint8)
-
             img = cv.imdecode(img, cv.IMREAD_COLOR)
-            cv.imwrite("image.png",img)
-
-            results = model(img)
-            coor = results.xyxy[0]
+            #cv.imwrite("image.png",img)
+            #cv.imshow("image", img)
+            results = model(img, conf=0.8)
+            #for r in results:
+                #r.save()
+              #  print(r.boxes.xywh)
+            #print(results)
+            coor = results[0].boxes.xywh
             xywh = torch.tensor(coor).tolist()
+            print(xywh)
             if len(xywh) > 0:
                 coor_arr = [int(x) for x in xywh[0]]
                 sendstr = str(coor_arr)[1:len(str(coor_arr))-1] + "#"
                 print(coor_arr)
-                cv.rectangle(img,(coor_arr[0], coor_arr[1]), ( coor_arr[2], coor_arr[3]), (0,255,0), 3)
+                #cv.rectangle(img,(coor_arr[0], coor_arr[1]), ( coor_arr[2], coor_arr[3]), (0,255,0), 3)
                 conn.send(sendstr.encode('utf-8'))
-            # results.show()
-            # cv.imshow("image", img)
+            #results.show()
+            else:
+                conn.send("0,0,0,0,0,0#".encode('utf-8'))
+
+
         else:
             print("Bad frame recv")
 
     conn.close()
 
-
-
-
 try:
     while (True):
         conn, addr = s.accept()
-        thread.start_new_thread(on_new_client, (c,addr))
+        start_new_thread(on_new_client, (conn,addr))
 
 except KeyboardInterrupt:
     s.close()

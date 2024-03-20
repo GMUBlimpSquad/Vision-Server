@@ -2,6 +2,13 @@ version: "3.9"
 services:
   vision: 
     build: .
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
     expose:
       - "8000"
   nginx:
